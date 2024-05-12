@@ -1,18 +1,21 @@
-FROM mcr.microsoft.com/devcontainers/javascript-node:0-18
+# Use a base image that includes Node.js and Ethereum dependencies
+FROM custom/blockchain-node:latest
 
-ARG VARIANT="18"
-ARG NODE_VERSION=${VARIANT}
+# Set the working directory
+WORKDIR /app
 
-RUN su node -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} && nvm alias default ${NODE_VERSION}"
-ENV NVM_DIR=/home/node/.nvm 
-ENV PATH=/home/node/.nvm/versions/node/v${NODE_VERSION}/bin:${PATH}
+# Copy package.json and package-lock.json to the working directory
+COPY package.json package-lock.json ./
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends apt-utils dialog 2>&1
+# Install project dependencies
+RUN npm install
 
-RUN apt-get install -y \
-    git \
-    procps \
-    curl \
-    lsb-release \
-    software-properties-common
+# Copy the source code to the working directory
+COPY . .
+
+# Expose ports for the front-end application and Ethereum blockchain
+EXPOSE 3000
+EXPOSE 8545
+
+# Command to run the application
+CMD ["npm", "start"]
