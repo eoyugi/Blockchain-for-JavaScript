@@ -1,11 +1,14 @@
 {
-  "name": "Node.js Development",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18",
+  "name": "Blockchain Development",
+  "image": "custom/blockchain-node:latest",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "18.14.1"
+      "version": "14.17.0"
+    },
+    "ghcr.io/devcontainers/features/ethereum:1": {
+      "version": "latest"
     }
   },
-  "forwardPorts": [3000],
-  "postCreateCommand": "npm install"
+  "forwardPorts": [3000, 8545],
+  "postCreateCommand": "npm install && npm install -g ethers.js"
 }
